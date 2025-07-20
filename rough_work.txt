@@ -1,0 +1,50 @@
+select * from crime_scene_report limit 10;
+
+select * from crime_scene_report where type = "murder" and date = "20180115" and city = "SQL City";
+
+select * from person;
+
+
+#suspect 1
+select * from person where address_street_name = "Northwestern Dr"
+order by address_number desc;
+
+   **below is the selected suspect direct info SQL code
+select * from person where id = "14887" ;
+
+#suspect 2
+select * from person where name like "Annabel%" 
+and address_street_name = "Franklin Ave";
+
+   **below is the selected suspect direct info SQL code
+select * from person where id = "16371";
+
+#Following suspect 1 transcript
+select * from get_fit_now_member ;
+
+*** 2 additional suspects spotted narrowing it down further.
+select * from get_fit_now_member where id like "48Z%" and membership_status = "gold"; 
+
+******Findings as per Suspect #1 transcript.
+
+select * from get_fit_now_member join person 
+on get_fit_now_member.person_id = person.id
+join drivers_license
+on person.license_id = drivers_license.id
+where get_fit_now_member.id like "48Z%" 
+and get_fit_now_member.membership_status = "gold" 
+and drivers_license.plate_number like "%H42W%";
+
+******* Jeremy Bowers = person_id,67318 = 48Z55,membership_id
+
+
+#Following suspect 2 transcript
+select * from interview where person_id = "16371";
+
+select * from get_fit_now_check_in;
+
+#List of people that were present on 9th
+select * from get_fit_now_check_in where check_in_date = "20180109";                           
+
+
+select * from get_fit_now_check_in where membership_id = "48Z55";

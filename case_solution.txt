@@ -1,0 +1,72 @@
+-- SQL Detective Challenge: Case Solution
+-- Author: UTKARSH PRAVEEN KHARCHE
+-- Purpose: Solving the fictional SQL City murder case using SQL.
+
+-- This was part of my personal SQL practice to sharpen my data skills.
+-- I tried to approach the problem like a real investigation, step by step.
+
+--------------------------------------------------------------------------------
+-- Step 1: Look into the crime scene report to get initial details.
+--------------------------------------------------------------------------------
+
+SELECT * FROM crime_scene_report
+WHERE type = 'murder'
+AND date = '20180115'
+AND city = 'SQL City';
+
+--------------------------------------------------------------------------------
+-- Step 2: Use witness statements to find possible suspects.
+--------------------------------------------------------------------------------
+
+-- Suspect 1: A person living on Northwestern Dr, at the highest address number.
+SELECT * FROM person
+WHERE address_street_name = 'Northwestern Dr'
+ORDER BY address_number DESC
+LIMIT 1;
+
+-- Checking full details of suspect 1.
+SELECT * FROM person WHERE id = '14887';
+
+-- Suspect 2: Someone named Annabel who lives on Franklin Ave.
+SELECT * FROM person
+WHERE name LIKE 'Annabel%'
+AND address_street_name = 'Franklin Ave';
+
+-- Checking full details of suspect 2.
+SELECT * FROM person WHERE id = '16371';
+
+--------------------------------------------------------------------------------
+-- Step 3: Follow up on suspect 1 using gym membership data.
+--------------------------------------------------------------------------------
+
+-- Look for gym members with gold membership and IDs starting with '48Z'.
+SELECT * FROM get_fit_now_member
+WHERE id LIKE '48Z%'
+AND membership_status = 'gold';
+
+-- Join the gym member data with person info and drivers license to check plates.
+SELECT * FROM get_fit_now_member
+JOIN person ON get_fit_now_member.person_id = person.id
+JOIN drivers_license ON person.license_id = drivers_license.id
+WHERE get_fit_now_member.id LIKE '48Z%'
+AND get_fit_now_member.membership_status = 'gold'
+AND drivers_license.plate_number LIKE '%H42W%';
+
+-- Outcome: This points to Jeremy Bowers (membership ID = '48Z55').
+
+--------------------------------------------------------------------------------
+-- Step 4: Use gym check-in data to follow up on suspect 2.
+--------------------------------------------------------------------------------
+
+-- Check the interview notes from Annabel (suspect 2).
+SELECT * FROM interview WHERE person_id = '16371';
+
+-- Look for all gym check-ins on January 9th.
+SELECT * FROM get_fit_now_check_in
+WHERE check_in_date = '20180109';
+
+-- See if Jeremy Bowers checked in on that day too.
+SELECT * FROM get_fit_now_check_in
+WHERE membership_id = '48Z55';
+
+-- End of case solution.
